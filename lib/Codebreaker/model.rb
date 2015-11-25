@@ -21,11 +21,8 @@ module Codebreaker
     def submit(guess)
       validate(guess)
       @guess = guess.to_s.chars.map { |num| num.to_i }
-
       @tries -= 1
-      
       count_pluses + count_minuses
-
     end
 
     def hint 

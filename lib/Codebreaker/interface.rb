@@ -54,13 +54,10 @@ module Codebreaker
 
     def hint
       hint = @game.hint
-      if hint 
-        output = %w(* * * *)
-        output[hint.keys[0]] = hint.values[0]
-        p output.join
-      else
-        puts NO_HINTS
-      end
+      return puts NO_HINTS if !hint
+      output = %w(* * * *)
+      output[hint.keys[0]] = hint.values[0]
+      p output.join
     end
 
     def welcome
