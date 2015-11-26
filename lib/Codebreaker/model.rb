@@ -22,7 +22,8 @@ module Codebreaker
       validate(guess)
       @guess = guess.to_s.chars.map { |num| num.to_i }
       @tries -= 1
-      count_pluses + count_minuses
+      result = count_pluses + count_minuses
+      result.empty? ? ['None'] : result
     end
 
     def hint 
@@ -60,9 +61,7 @@ module Codebreaker
     end
 
     def count_minuses
-      result=[]
-      filtered_code = []
-      filtered_guess = []
+      result, filtered_code, filtered_guess = [], [], []
 
       @guess.each_with_index do |number, index|
         if @guess[index] != @code[index]

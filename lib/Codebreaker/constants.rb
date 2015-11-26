@@ -23,9 +23,11 @@ module Codebreaker
 
   HINTS_UNAVAILABLE = "Hints available only when playing."
 
-  LOSE_MESSAGE = "Game over."
+  LOSE_MESSAGE = "Game over. The code was:"
 
-  WIN_MESSAGE = "You win!"
+  WIN_MESSAGE = "You win! The code was:"
+
+  RESTART = "Restarted."
 
   UNKNOWN_COMMNAND = "Unknown command."
 

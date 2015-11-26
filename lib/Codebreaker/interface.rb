@@ -28,27 +28,34 @@ module Codebreaker
       puts GENERATED_CODE_MESSAGE
       puts GUESS_MESSAGE
       loop do
-        submit = gets.chomp
-        case submit
+        @submit = gets.chomp
+        case @submit
         when 'cheat' then puts @game.send(:instance_variable_get, :@code).join
         when 'h' then hint
         when 'e' then exit
-        when 'r' then @game.restart
+        when 'r' then @game.restart; puts RESTART
         when '?' then puts CHOOSE_MESSAGE
-        else
-          begin
-            puts @game.submit(submit.to_i).join
-          rescue ArgumentError
-            puts "Wrong Input"
-          end
+        else err
         end
-        if @game.win?
-          puts WIN_MESSAGE
-          menu
-        elsif @game.lose?
-          puts LOSE_MESSAGE
-          menu
-        end
+        game_over
+      end
+    end
+
+    def game_over
+      if @game.win?
+        puts "#{WIN_MESSAGE} #{@game.send(:instance_variable_get, :@code).join}"
+        menu
+      elsif @game.lose?
+        puts "#{LOSE_MESSAGE} #{@game.send(:instance_variable_get, :@code).join}"
+        menu
+      end
+    end
+
+    def err
+      begin
+        puts @game.submit(@submit.to_i).join
+      rescue ArgumentError
+        puts "Wrong Input"
       end
     end
 
