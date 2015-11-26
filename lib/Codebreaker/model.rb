@@ -44,6 +44,11 @@ module Codebreaker
     end
 
     private
+    def generate
+      @code = (1..4).map { |item| rand(1..6) }
+      true
+    end
+
     def count_pluses
       result = []
       @guess.each_with_index do |number, index| 
@@ -77,11 +82,5 @@ module Codebreaker
       end
       result
     end
-
-    def generate
-      @code = (1..4).map { |item| rand(1..6) }
-      true
-    end
-
   end
 end

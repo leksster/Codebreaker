@@ -4,24 +4,121 @@ module Codebreaker
 
   describe Model do
 
-    before(:each) do
-      @game = Model.new
-    end
+    before { @game = Model.new }
+
+    it { should respond_to(:start, :validate, :submit, :hint, :win?, :lose?) }
 
     it 'has a version number' do
       expect(Codebreaker::VERSION).not_to be nil
     end
 
-    it 'responds to generate, start' do
-        expect(@game).to respond_to(:start)
+    context '#initialize' do
+      xit 'should call start when init' do
+        expect(Model.new).to receive(:start)
+        Model.new
+      end
     end
 
-    context '#initialize' do
+    context '#start' do
+      before { @game.start }
+      it 'should set tries to 10' do 
+        expect(@game.instance_variable_get(:@tries)).to eq(10)
+      end
 
+      it 'should set 1 hint' do
+        expect(@game.instance_variable_get(:@hints)).to eq(1)
+      end
+
+      it 'should call #generate' do
+        expect(@game).to receive(:generate)
+        @game.start
+      end
+    end
+
+    context '#validate' do
+      it 'should throw an ArgumentError if Argument is not a number' do
+        expect{@game.validate('gasg')}.to raise_error(ArgumentError)
+      end
+
+      it 'should throw an ArgumentError if Argument > or < 4 digits' do
+        expect{@game.validate(612)}.to raise_error(ArgumentError)
+        expect{@game.validate(126236)}.to raise_error(ArgumentError)
+      end
+    end
+
+    context '#submit' do
+      it 'should call #validate' do
+        expect(@game).to receive(:validate).with(1234)
+        @game.submit(1234)
+      end
+      it 'should save guess value to @guess' do
+        @game.submit(4321)
+        expect(@game.instance_variable_get(:@guess)).not_to be_empty
+      end
+      it 'should decrement attempts' do
+        expect{@game.submit(4125)}
+          .to change{@game.instance_variable_get(:@tries)}.by(-1)
+      end
+      it 'should return result in an array' do
+        expect(@game.submit(1325)).to be_a(Array)
+      end
+      context 'should return correct results' do
+        it 'code=1321, guess=5125. Should return ["+","-"]' do
+          @game.instance_variable_set(:@code, [1,3,2,1])
+          expect(@game.submit(5125)).to eq(["+", "-"])
+        end
+
+        it 'code=2421, guess=5125. Should return ["+","-"]' do
+          @game.instance_variable_set(:@code, [2,4,2,1])
+          expect(@game.submit(5125)).to eq(["+", "-"])
+        end
+
+        it 'code=1135, guess=1155. Should return ["+","+","+"]' do
+          @game.instance_variable_set(:@code, [1,1,3,5])
+          expect(@game.submit(1155)).to eq(["+", "+", "+"])
+        end
+
+        it 'code=1234, guess=2524. Should return ["+","-"]' do
+          @game.instance_variable_set(:@code, [1,2,3,4])
+          expect(@game.submit(2524)).to eq(["+", "-"])
+        end
+      end
+    end
+
+    context '#hint' do
+      it 'should return hash' do 
+        expect(@game.hint).to be_a(Hash)
+      end
+
+      it 'should decrement hint count' do
+        expect{@game.hint}.to change{@game.instance_variable_get(:@hints)}.by(-1)
+      end
+
+      it 'should return false when no hints left' do
+        @game.hint
+        expect(@game.hint).to be_falsey
+      end
+
+      it 'should be a hash with index and value of secret code' do
+        expect(@game.hint).to include(0..6)
+      end
+
+      it 'should be only 1 hint' do
+        expect(@game.instance_variable_get(:@hints)).to eq(1)
+      end
+    end
+
+    context '#win?' do
+      it 'should return true when player won'
+    end
+
+    context '#lose?' do
+      it 'should return true when player lost'
     end
 
     context '#generate' do  
-      it 'saves secret code' do
+      before { @game.send(:generate) }
+      it 'should save secret code to @code' do 
         expect(@game.instance_variable_get(:@code)).not_to be_empty
       end
       it 'saves secret code as an array' do
@@ -32,13 +129,6 @@ module Codebreaker
       end
       it 'saves secret code with numbers from 1 to 6' do
         expect(@game.instance_variable_get(:@code)).to all(be_between(1,6))
-      end
-    end
-
-    context '#start' do
-      it 'generates secret code with #generate method' do 
-        expect(@game).to receive(:generate).with(no_args)
-        @game.start
       end
     end
 
@@ -102,45 +192,6 @@ module Codebreaker
 
     end
 
-    context '#submit' do
-      it 'checks the argument to be Fixnum' do
-        expect{@game.submit('5255')}.to raise_error(ArgumentError)
-      end
-
-      it 'checks the argument to be 4 digits' do
-        expect{@game.submit(612)}.to raise_error(ArgumentError)
-        expect{@game.submit(126236)}.to raise_error(ArgumentError)
-      end
-
-      it 'saves the guess' do
-        @game.submit(1234)
-        expect(@game.instance_variable_get(:@guess)).not_to be_empty
-      end
-
-      context 'some examples' do
-        it 'code=1321, guess=5125. Should return ["+","-"]' do
-          @game.instance_variable_set(:@code, [1,3,2,1])
-          expect(@game.submit(5125)).to eq(["+", "-"])
-        end
-
-        it 'code=2421, guess=5125. Should return ["+","-"]' do
-          @game.instance_variable_set(:@code, [2,4,2,1])
-          expect(@game.submit(5125)).to eq(["+", "-"])
-        end
-
-        it 'code=1135, guess=1155. Should return ["+","+","+"]' do
-          @game.instance_variable_set(:@code, [1,1,3,5])
-          expect(@game.submit(1155)).to eq(["+", "+", "+"])
-        end
-
-        it 'code=1234, guess=2524. Should return ["+","-"]' do
-          @game.instance_variable_set(:@code, [1,2,3,4])
-          expect(@game.submit(2524)).to eq(["+", "-"])
-        end
-      end
-
-    end
-
     context '#win' do
       it 'returnes true when @guess == @code' do
         @game.instance_variable_set(:@code, [1,2,2,1])
@@ -171,22 +222,8 @@ module Codebreaker
       end
     end
 
-    context '#hint' do
-      it 'gives a hint' do 
-        expect(@game.hint).to be_a(Hash)
-      end
-
-      it 'only 1 hint is available' do
-        expect(@game.instance_variable_get(:@hints)).to eq(1)
-      end
-      xit 'returns Hash with random secret number and it\'s index' do
-        expect(@game.hint).to be_a(Hash)
-      end
-    end
-
     context '#save' do
       it 'saves progress to somewhere'
     end
-
   end
 end
