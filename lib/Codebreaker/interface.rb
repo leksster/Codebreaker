@@ -35,7 +35,7 @@ module Codebreaker
         when 'e' then exit
         when 'r' then @game.restart; puts RESTART
         when '?' then puts CHOOSE_MESSAGE
-        else err
+        else input
         end
         game_over
       end
@@ -51,11 +51,12 @@ module Codebreaker
       end
     end
 
-    def err
+    def input
       begin
         puts @game.submit(@submit.to_i).join
-      rescue ArgumentError
+      rescue ArgumentError => e
         puts "Wrong Input"
+        puts e
       end
     end
 

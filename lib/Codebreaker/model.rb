@@ -14,13 +14,14 @@ module Codebreaker
     alias_method :restart, :start
 
     def validate(guess)
-      raise ArgumentError, 'Argument is not a number' unless guess.is_a?(Fixnum)
+      raise ArgumentError, 'Argument is not a number' if guess == 0
       raise ArgumentError, '4 digits required' unless guess.to_s.length == 4
+      raise ArgumentError, 'Numbers should be between 0 and 6' if @guess.any? { |num| num.to_i > 6 || num.to_i < 0 }
     end
 
     def submit(guess)
-      validate(guess)
       @guess = guess.to_s.chars.map { |num| num.to_i }
+      validate(guess)
       @tries -= 1
       result = count_pluses + count_minuses
       result.empty? ? ['None'] : result
