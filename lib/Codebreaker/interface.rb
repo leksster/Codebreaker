@@ -1,5 +1,4 @@
 require "Codebreaker"
-require "pry"
 
 module Codebreaker
   class Interface

@@ -10,4 +10,4 @@ A - indicates a number match: one of the numbers in the guess is the same as one
 
 ## Demo
 
-[Console Demo](https://repl.it/B3Rc)
+[Console Demo](https://repl.it/B3Rc/4)
