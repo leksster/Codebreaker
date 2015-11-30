@@ -3,15 +3,23 @@ require "Codebreaker"
 module Codebreaker
   class Interface
 
+    def initialize 
+      @game = Codebreaker::Model.new
+    end
+
     def play
-      welcome
+      puts START_MESSAGE
       menu
+    end
+
+    def user_input
+      gets.chomp.downcase
     end
 
     def menu
       puts CHOOSE_MESSAGE
       loop do
-        case gets.chomp.downcase
+        case user_input
         when 's' then start_game
         when 'e' then exit
         when 'h' then puts HINTS_UNAVAILABLE
@@ -23,18 +31,17 @@ module Codebreaker
     end
 
     def start_game
-      @game = Codebreaker::Model.new
       puts GENERATED_CODE_MESSAGE
       puts GUESS_MESSAGE
       loop do
-        @submit = gets.chomp
+        @submit = user_input
         case @submit
         when 'cheat' then puts @game.send(:instance_variable_get, :@code).join
         when 'h' then hint
         when 'e' then exit
         when 'r' then @game.restart; puts RESTART
         when '?' then puts CHOOSE_MESSAGE
-        else input
+        else check
         end
         game_over
       end
@@ -50,9 +57,9 @@ module Codebreaker
       end
     end
 
-    def input
+    def check
       begin
-        puts @game.submit(@submit.to_i).join
+        puts @game.submit(@submit).join
       rescue ArgumentError => e
         puts "Wrong Input"
         puts e
@@ -65,10 +72,6 @@ module Codebreaker
       output = %w(* * * *)
       output[hint.keys[0]] = hint.values[0]
       p output.join
-    end
-
-    def welcome
-      puts START_MESSAGE
     end
 
   end

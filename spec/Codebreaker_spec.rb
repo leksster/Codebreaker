@@ -12,13 +12,6 @@ module Codebreaker
       expect(Codebreaker::VERSION).not_to be nil
     end
 
-    context '#initialize' do
-      xit 'should call start when init' do
-        expect(Model.new).to receive(:start)
-        Model.new
-      end
-    end
-
     context '#start' do
       before { @game.start }
       it 'should set tries to 10' do 
@@ -35,14 +28,22 @@ module Codebreaker
       end
     end
 
+    context '#restart' do
+      it 'should be alias of #start method' do
+        @game.start == @game.restart
+      end
+    end
+
     context '#validate' do
       it 'should throw an ArgumentError if Argument is not a number' do
-        expect{@game.validate('gasg')}.to raise_error(ArgumentError)
+        expect{@game.validate("gass")}.to raise_error(ArgumentError)
       end
-
       it 'should throw an ArgumentError if Argument > or < 4 digits' do
         expect{@game.validate(612)}.to raise_error(ArgumentError)
         expect{@game.validate(126236)}.to raise_error(ArgumentError)
+      end
+      it 'should throw an ArgumentError if Argument digit not in 1..6 range' do
+        expect{@game.validate(8751)}.to raise_error(ArgumentError)
       end
     end
 
@@ -106,14 +107,6 @@ module Codebreaker
       it 'should be only 1 hint' do
         expect(@game.instance_variable_get(:@hints)).to eq(1)
       end
-    end
-
-    context '#win?' do
-      it 'should return true when player won'
-    end
-
-    context '#lose?' do
-      it 'should return true when player lost'
     end
 
     context '#generate' do  
@@ -211,14 +204,8 @@ module Codebreaker
         expect(@game.lose?).to be true
       end
       it 'returnes false when there is 1 or more tries' do
-        9.times { @game.submit(1267) }
+        9.times { @game.submit(1265) }
         expect(@game.lose?).to be false
-      end
-    end
-
-    context '#restart' do
-      xit 'restarts the game' do
-        expect(@game.restart).to change{@game.instance_variable_get(:@code)}
       end
     end
 

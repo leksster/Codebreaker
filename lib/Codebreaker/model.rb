@@ -14,9 +14,9 @@ module Codebreaker
     alias_method :restart, :start
 
     def validate(guess)
-      raise ArgumentError, 'Argument is not a number' if guess == 0
+      raise ArgumentError, 'Argument is not a number' if guess =~ /[^0-9]/
       raise ArgumentError, '4 digits required' unless guess.to_s.length == 4
-      raise ArgumentError, 'Numbers should be between 0 and 6' if @guess.any? { |num| num.to_i > 6 || num.to_i < 0 }
+      raise ArgumentError, 'Numbers should be between 1 and 6' if to_arr(guess).any? { |num| num.to_i > 6 || num.to_i < 1 }
     end
 
     def submit(guess)
@@ -46,6 +46,13 @@ module Codebreaker
     end
 
     private
+
+    def to_arr(inp)
+      arr = []
+      inp.to_s.split("").each { |n| arr << n }
+      arr
+    end
+
     def generate
       @code = (1..4).map { |item| rand(1..6) }
       true
@@ -63,14 +70,12 @@ module Codebreaker
 
     def count_minuses
       result, filtered_code, filtered_guess = [], [], []
-
       @guess.each_with_index do |number, index|
         if @guess[index] != @code[index]
           filtered_guess << @guess[index]
           filtered_code << @code[index]
         end
       end
-
       filtered_guess.each do |guess|
         filtered_code.each do |code|
           if guess == code 

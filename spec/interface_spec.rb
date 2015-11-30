@@ -6,22 +6,26 @@ module Codebreaker
 
     let(:interface) { Codebreaker::Interface.new }
 
-    context '#play' do
-      xit 'should call #welcome' do
-        expect(interface).to receive(:welcome).with(no_args)
-        allow(interface).to receive(:submit).and_return('s')
-        interface.play
+    context '#new' do
+      it 'calls Codebreaker::Model.new when creating inteface instance' do
+        expect(Codebreaker::Model).to receive(:new)
+        Codebreaker::Interface.new
       end
-      xit 'should call #start' do
-        expect(interface).to receive(:submit).with(no_args)
-        allow(interface).to receive(:submit).and_return('s')
+    end
+
+    context '#play' do
+      before {allow(interface).to receive(:menu).and_return(CHOOSE_MESSAGE)}
+      it 'should call #menu' do
+        expect(interface).to receive(:menu).with(no_args)
         interface.play
       end
     end
 
-    context '#submit' do
+    context '#menu' do
       xit 'test' do
-        allow(interface).to receive(:submit).and_return('s')
+        allow(interface).to receive(:user_input).and_return('s')
+        expect(interface.menu).to receive(:start_game)
+        interface.menu
       end
     end
 
