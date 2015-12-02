@@ -8,7 +8,7 @@ module Codebreaker
     end
 
     def play
-      puts START_MESSAGE
+      show(START_MESSAGE)
       menu
     end
 
@@ -17,30 +17,34 @@ module Codebreaker
     end
 
     def menu
-      puts CHOOSE_MESSAGE
+      show(CHOOSE_MESSAGE)
       loop do
         case user_input
         when 's' then start_game
         when 'e' then exit
-        when 'h' then puts HINTS_UNAVAILABLE
-        when 'r' then puts CANT_RESTART
-        when '?' then puts CHOOSE_MESSAGE
-        else puts UNKNOWN_COMMNAND
+        when 'h' then show(HINTS_UNAVAILABLE)
+        when 'r' then show(CANT_RESTART)
+        when '?' then show(CHOOSE_MESSAGE)
+        else show(UNKNOWN_COMMAND)
         end
       end
     end
 
+    def show(message)
+      puts message
+    end
+
     def start_game
-      puts GENERATED_CODE_MESSAGE
-      puts GUESS_MESSAGE
+      show(GENERATED_CODE_MESSAGE)
+      show(GUESS_MESSAGE)
       loop do
         @submit = user_input
         case @submit
-        when 'cheat' then puts @game.send(:instance_variable_get, :@code).join
+        when 'cheat' then show(@game.send(:instance_variable_get, :@code).join)
         when 'h' then hint
         when 'e' then exit
-        when 'r' then @game.restart; puts RESTART
-        when '?' then puts CHOOSE_MESSAGE
+        when 'r' then @game.restart; show(RESTART)
+        when '?' then show(CHOOSE_MESSAGE)
         else check
         end
         game_over
@@ -49,26 +53,26 @@ module Codebreaker
 
     def game_over
       if @game.win?
-        puts "#{WIN_MESSAGE} #{@game.send(:instance_variable_get, :@code).join}"
+        show("#{WIN_MESSAGE} #{@game.send(:instance_variable_get, :@code).join}")
         menu
       elsif @game.lose?
-        puts "#{LOSE_MESSAGE} #{@game.send(:instance_variable_get, :@code).join}"
+        show("#{LOSE_MESSAGE} #{@game.send(:instance_variable_get, :@code).join}")
         menu
       end
     end
 
     def check
       begin
-        puts @game.submit(@submit).join
+        show(@game.submit(@submit).join)
       rescue ArgumentError => e
-        puts "Wrong Input"
-        puts e
+        show("Wrong Input")
+        show e
       end
     end
 
     def hint
       hint = @game.hint
-      return puts NO_HINTS if !hint
+      return show(NO_HINTS) if !hint
       output = %w(* * * *)
       output[hint.keys[0]] = hint.values[0]
       p output.join

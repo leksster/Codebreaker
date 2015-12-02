@@ -29,7 +29,7 @@ module Codebreaker
 
   RESTART = "Restarted."
 
-  UNKNOWN_COMMNAND = "Unknown command."
+  UNKNOWN_COMMAND = "Unknown command."
 
   CANT_RESTART = "Please start the game first."
 
