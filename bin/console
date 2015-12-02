@@ -13,4 +13,6 @@ require "Codebreaker"
 # require "irb"
 # IRB.start
 
-Codebreaker::Interface.new.play
+interface = Codebreaker::Interface.new
+
+interface.play

@@ -1,14 +1,14 @@
-require "Codebreaker"
-
 module Codebreaker
   class Interface
 
-    def initialize 
+    def initialize
+      @loop = true
       @game = Codebreaker::Model.new
     end
 
     def play
       show(START_MESSAGE)
+      show(CHOOSE_MESSAGE)
       menu
     end
 
@@ -17,7 +17,6 @@ module Codebreaker
     end
 
     def menu
-      show(CHOOSE_MESSAGE)
       loop do
         case user_input
         when 's' then start_game
@@ -27,6 +26,7 @@ module Codebreaker
         when '?' then show(CHOOSE_MESSAGE)
         else show(UNKNOWN_COMMAND)
         end
+        break if @loop == false
       end
     end
 
@@ -34,21 +34,30 @@ module Codebreaker
       puts message
     end
 
-    def start_game
+    def game_messages
       show(GENERATED_CODE_MESSAGE)
       show(GUESS_MESSAGE)
+    end
+
+    def start_game
+      game_messages
       loop do
         @submit = user_input
         case @submit
         when 'cheat' then show(@game.send(:instance_variable_get, :@code).join)
         when 'h' then hint
         when 'e' then exit
-        when 'r' then @game.restart; show(RESTART)
+        when 'r' then restart; show(RESTART)
         when '?' then show(CHOOSE_MESSAGE)
         else check
         end
-        game_over
+        break if @loop == false
       end
+      game_over
+    end
+
+    def restart
+      @game.restart
     end
 
     def game_over
