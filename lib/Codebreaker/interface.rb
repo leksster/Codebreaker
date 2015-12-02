@@ -8,7 +8,6 @@ module Codebreaker
 
     def play
       show(START_MESSAGE)
-      show(CHOOSE_MESSAGE)
       menu
     end
 
@@ -17,6 +16,7 @@ module Codebreaker
     end
 
     def menu
+      show(CHOOSE_MESSAGE)
       loop do
         case user_input
         when 's' then start_game
@@ -40,6 +40,7 @@ module Codebreaker
     end
 
     def start_game
+      restart
       game_messages
       loop do
         @submit = user_input
@@ -51,9 +52,9 @@ module Codebreaker
         when '?' then show(CHOOSE_MESSAGE)
         else check
         end
+        game_over
         break if @loop == false
-      end
-      game_over
+      end    
     end
 
     def restart

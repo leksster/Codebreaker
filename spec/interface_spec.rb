@@ -27,15 +27,12 @@ module Codebreaker
         expect(interface).to receive(:show).with(START_MESSAGE)
         interface.play
       end
-      it 'should call #show CHOOSE_MESSAGE' do
-        expect(interface).to receive(:show).with(CHOOSE_MESSAGE)
-        interface.play
-      end
     end
 
     context '#menu' do
       it 'should call #show(UNKNOWN_COMMAND) for any non defined command' do
         allow(interface).to receive(:user_input).and_return('smth')
+        expect(interface).to receive(:show).with(CHOOSE_MESSAGE)
         expect(interface).to receive(:show).with(UNKNOWN_COMMAND)
         interface.menu
       end
@@ -54,15 +51,18 @@ module Codebreaker
       it 'should call #show(HINTS_UNAVAILABLE) if "h" received' do
         allow(interface).to receive(:user_input).and_return('h')
         expect(interface).to receive(:show).with(HINTS_UNAVAILABLE)
+        expect(interface).to receive(:show).with(CHOOSE_MESSAGE)
         interface.menu
       end
       it 'should call #show(CANT_RESTART) if "r" received' do
         allow(interface).to receive(:user_input).and_return('r')
         expect(interface).to receive(:show).with(CANT_RESTART)
+        expect(interface).to receive(:show).with(CHOOSE_MESSAGE)
         interface.menu
       end
       it 'should call #show(CHOOSE_MESSAGE) if "?" received' do
         allow(interface).to receive(:user_input).and_return('?')
+        expect(interface).to receive(:show).with(CHOOSE_MESSAGE)
         expect(interface).to receive(:show).with(CHOOSE_MESSAGE)
         interface.menu
       end
@@ -70,6 +70,7 @@ module Codebreaker
 
     context '#start_game' do
       before do
+        allow(interface).to receive(:restart)
         allow(interface).to receive(:game_messages)
         allow(interface).to receive(:check)
         allow(interface).to receive(:show).with(RESTART)
