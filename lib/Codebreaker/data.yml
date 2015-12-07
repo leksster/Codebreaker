@@ -1,0 +1,56 @@
+--- !ruby/object:Codebreaker::Model
+name: hdfhfd111
+tries: 10
+hints: 1
+guesses: []
+code:
+- 5
+- 1
+- 6
+- 6
+--- !ruby/object:Codebreaker::Model
+name: 525
+tries: 10
+hints: 1
+guesses: []
+code:
+- 3
+- 3
+- 1
+- 6
+--- !ruby/object:Codebreaker::Model
+name: 525
+tries: 10
+hints: 1
+guesses: []
+code:
+- 3
+- 3
+- 1
+- 6
+--- !ruby/object:Codebreaker::Model
+name: 525
+tries: 10
+hints: 1
+guesses: []
+code:
+- 3
+- 3
+- 1
+- 6
+--- !ruby/object:Codebreaker::Model
+name: hdfhdfhdfh
+tries: 9
+hints: 1
+guesses:
+- &1
+  - 5
+  - 1
+  - 2
+  - 5
+code:
+- 3
+- 3
+- 1
+- 6
+guess: *1

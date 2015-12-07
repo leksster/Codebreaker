@@ -208,9 +208,5 @@ module Codebreaker
         expect(@game.lose?).to be false
       end
     end
-
-    context '#save' do
-      it 'saves progress to somewhere'
-    end
   end
 end

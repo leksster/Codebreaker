@@ -1,3 +1,6 @@
+require 'yaml'
+require 'json'
+
 module Codebreaker
 
   class Model
@@ -7,21 +10,29 @@ module Codebreaker
     end
 
     def start
+      @name = nil
       @tries = 10
       @hints = 1
+      @guesses = []
       generate
     end
     alias_method :restart, :start
+
+    def to_json
+      { :name => @name, :tries => @tries, :hints => @hints, :guesses => @guesses, :code => @code }.to_json
+    end
 
     def validate(guess)
       raise ArgumentError, 'Argument is not a number' if guess =~ /[^0-9]/
       raise ArgumentError, '4 digits required' unless guess.to_s.length == 4
       raise ArgumentError, 'Numbers should be between 1 and 6' if to_arr(guess).any? { |num| num.to_i > 6 || num.to_i < 1 }
+      raise ArgumentError, 'Should not be nil' if guess.nil?
     end
 
     def submit(guess)
       @guess = guess.to_s.chars.map { |num| num.to_i }
       validate(guess)
+      @guesses << @guess
       @tries -= 1
       result = count_pluses + count_minuses
       result.empty? ? ['None'] : result
@@ -43,6 +54,14 @@ module Codebreaker
 
     def lose?
       @tries <= 0
+    end
+
+    def save(name)
+      data = YAML.load_file('data.yml')
+      File.open( 'data.yml', 'a' ) do |out|
+        self.instance_variable_set(:@name, name)
+        out.write self.to_yaml
+      end
     end
 
     private
