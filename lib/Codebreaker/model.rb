@@ -13,7 +13,7 @@ module Codebreaker
       @name = nil
       @tries = 10
       @hints = 1
-      @guesses = []
+      @guesses = Hash.new
       generate
     end
     alias_method :restart, :start
@@ -32,10 +32,9 @@ module Codebreaker
     def submit(guess)
       @guess = guess.to_s.chars.map { |num| num.to_i }
       validate(guess)
-      @guesses << @guess
       @tries -= 1
       result = count_pluses + count_minuses
-      result.empty? ? ['None'] : result
+      @guesses[@guess] = result.empty? ? ['None'] : result
     end
 
     def hint 
